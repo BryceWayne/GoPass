@@ -37,8 +37,8 @@ A secure, open-source password manager built with Go and a clean web interface. 
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/yourusername/gopass-manager.git
-cd gopass-manager
+git clone https://github.com/BryceWayne/password-manager.git
+cd password-manager
 ```
 
 2. **Install dependencies:**
@@ -198,8 +198,8 @@ Contributions are welcome! Here's how you can help:
 
 ```bash
 # Clone your fork
-git clone https://github.com/yourusername/gopass-manager.git
-cd gopass-manager
+git clone https://github.com/BryceWayne/password-manager.git
+cd password-manager
 
 # Install dependencies
 go mod tidy
