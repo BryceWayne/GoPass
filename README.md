@@ -2,7 +2,7 @@
 
 ![GoPass Logo](https://img.shields.io/badge/GoPass-Password%20Manager-blue?style=for-the-badge&logo=go)
 
-A secure, open-source password manager built with Go and Fyne GUI framework. GoPass provides military-grade encryption to keep your passwords safe while offering a clean, intuitive user interface.
+A secure, open-source password manager built with Go and a clean web interface. GoPass provides military-grade encryption to keep your passwords safe while offering an intuitive web-based user interface accessible from any browser.
 
 ## 🔒 Security Features
 
@@ -17,17 +17,19 @@ A secure, open-source password manager built with Go and Fyne GUI framework. GoP
 
 - 🔐 **Secure Password Storage** - Store unlimited passwords with encryption
 - 🔍 **Fast Search** - Quickly find passwords by title, username, or website
-- 🎲 **Password Generator** - Generate strong, random passwords
+- 🎲 **Password Generator** - Generate strong, random passwords with one click
 - 📋 **Clipboard Integration** - Copy passwords with one click
 - ✏️ **Easy Management** - Add, edit, and delete entries effortlessly
 - 🔒 **Vault Locking** - Lock your vault when not in use
 - 💾 **Auto-Save** - Changes are automatically encrypted and saved
 - 🏷️ **Rich Metadata** - Store titles, usernames, websites, and notes
+- 🌐 **Web Interface** - Access your passwords through any modern web browser
 
 ## 📋 Requirements
 
 - Go 1.21 or later
 - Operating System: Windows, macOS, or Linux
+- Modern web browser (Chrome, Firefox, Safari, Edge)
 
 ## 🚀 Installation
 
@@ -82,22 +84,23 @@ go run main.go
 ## 🎯 Quick Start
 
 ### First Launch
-1. Run GoPass
-2. Create a strong master password when prompted
-3. Your encrypted vault is now ready!
+1. Run GoPass - it will start a web server on `http://localhost:8080`
+2. Open your web browser and navigate to `http://localhost:8080`
+3. Create a strong master password when prompted
+4. Your encrypted vault is now ready!
 
 ### Adding Your First Password
-1. Click **"Add Password"**
+1. Click **"Add Password"** on the dashboard
 2. Fill in the details:
    - **Title**: Name for this entry (e.g., "Gmail Account")
    - **Username**: Your username or email
    - **Password**: Use the "Generate" button for a secure password
    - **Website**: The website URL (optional)
    - **Notes**: Any additional information (optional)
-3. Click **"Submit"** to save
+3. Click **"Save"** to store the entry
 
 ### Managing Passwords
-- **Search**: Type in the search box to filter entries
+- **Search**: Type in the search box and press Enter to filter entries
 - **Copy**: Click the "Copy" button to copy a password to clipboard
 - **Edit**: Click "Edit" to modify an entry
 - **Delete**: Click "Delete" to remove an entry (with confirmation)
@@ -107,33 +110,30 @@ go run main.go
 
 ```go
 require (
-    fyne.io/fyne/v2 v2.4.0
     golang.org/x/crypto v0.14.0
 )
 ```
 
 ## 📁 Data Storage
 
-GoPass stores your encrypted database in your system's application data directory:
+GoPass stores your encrypted database in your home directory:
 
-- **Windows**: `%APPDATA%/gopass-manager/`
-- **macOS**: `~/Library/Application Support/gopass-manager/`
-- **Linux**: `~/.local/share/gopass-manager/`
+- **All OS**: `~/.gopass/passwords.enc`
 
-The database file (`passwords.enc`) is encrypted and cannot be read without your master password.
+The database file is encrypted and cannot be read without your master password.
 
 ## 🛡️ Security Architecture
 
 ### Encryption Process
 1. **Key Derivation**: Master password → PBKDF2 with 100,000 iterations → 256-bit key
 2. **Data Encryption**: Database → AES-GCM encryption → Encrypted file
-3. **Salt Generation**: Unique salt for each save operation
+3. **Salt Generation**: Unique salt stored with encrypted data
 4. **Secure Storage**: Encrypted data stored with 600 permissions (Unix)
 
 ### Password Generation
 - Uses `crypto/rand` for cryptographically secure random generation
 - Character set includes: `a-z`, `A-Z`, `0-9`, and special characters
-- Default length: 16 characters (customizable in code)
+- Default length: 16 characters (customizable via API parameter)
 
 ## 🔒 Best Practices
 
@@ -144,10 +144,11 @@ The database file (`passwords.enc`) is encrypted and cannot be read without your
 - Remember it - there's no password recovery
 
 ### General Security
-- Lock your vault when stepping away
+- Lock your vault when stepping away from your computer
 - Keep your system updated
 - Use unique passwords for each account
 - Regularly update important passwords
+- Only access GoPass from `localhost` - never expose it to the internet
 
 ## 🏗️ Architecture
 
@@ -156,7 +157,8 @@ GoPass/
 ├── main.go                 # Main application file
 ├── go.mod                  # Go module dependencies
 ├── README.md              # This file
-└── passwords.enc          # Encrypted database (created at runtime)
+└── ~/.gopass/
+    └── passwords.enc      # Encrypted database (created at runtime)
 ```
 
 ### Key Components
@@ -165,7 +167,20 @@ GoPass/
 - **Database**: Encrypted storage structure
 - **PasswordEntry**: Individual password record
 - **Encryption**: AES-GCM with PBKDF2 key derivation
-- **GUI**: Fyne-based user interface
+- **Web Interface**: HTML templates with JavaScript for interactivity
+- **HTTP Server**: Handles routing and session management
+
+### API Endpoints
+
+- `GET /` - Login page
+- `POST /` - Authentication
+- `GET /dashboard` - Main password listing with search
+- `GET /add` - Add new password form
+- `GET /edit/{id}` - Edit password form
+- `POST /add` & `POST /edit/{id}` - Save password entries
+- `GET /delete/{id}` - Delete password entry
+- `GET /lock` - Lock the vault
+- `GET /api/generate-password` - Generate secure password
 
 ## 🤝 Contributing
 
@@ -204,6 +219,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 While GoPass uses industry-standard encryption and security practices, no software is 100% secure. Always maintain backups of important data and use additional security measures where appropriate.
 
+**Important Security Note**: GoPass runs a local web server for the interface. Never expose this server to the internet or allow remote access, as it's designed for local use only.
+
 ## 🐛 Bug Reports & Feature Requests
 
 Found a bug or have a feature request? Please open an issue on GitHub with:
@@ -213,9 +230,8 @@ Found a bug or have a feature request? Please open an issue on GitHub with:
 
 ## 🙏 Acknowledgments
 
-- **Fyne**: Excellent cross-platform GUI framework
-- **Go Crypto**: Robust cryptographic libraries
-- **Community**: All contributors and users
+- **Go Standard Library**: Excellent cryptographic libraries
+- **Go Community**: All contributors and users
 
 ## 📊 Roadmap
 
@@ -224,12 +240,14 @@ Found a bug or have a feature request? Please open an issue on GitHub with:
 - [ ] Categories/Tags for organization
 - [ ] Two-factor authentication support
 - [ ] Secure sharing capabilities
-- [ ] Mobile app version
-- [ ] Browser extension
-- [ ] Biometric authentication
+- [ ] HTTPS support for the web interface
+- [ ] Mobile-responsive design improvements
+- [ ] Biometric authentication (where supported)
+- [ ] Browser extension integration
+- [ ] Multiple vault support
 
 ---
 
-**Made with ❤️ using Go and Fyne**
+**Made with ❤️ using Go and vanilla HTML/CSS/JavaScript**
 
 *Keep your digital life secure with GoPass!*
