@@ -4,6 +4,9 @@
 
 A secure, open-source password manager built with Go and a clean web interface. GoPass provides military-grade encryption to keep your passwords safe while offering an intuitive web-based user interface accessible from any browser.
 
+![GoPassimage](https://github.com/user-attachments/assets/71f12583-9437-4422-9d17-3f95036303cf)
+
+
 ## 🔒 Security Features
 
 - **AES-GCM Encryption**: Industry-standard 256-bit encryption
