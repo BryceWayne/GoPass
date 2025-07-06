@@ -1,4 +1,4 @@
-module github.com/BryceWayne/password-manager
+module github.com/BryceWayne/GoPass
 
 go 1.23.0
 
