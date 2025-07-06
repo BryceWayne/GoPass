@@ -131,8 +131,13 @@ The database file is encrypted and cannot be read without your master password.
 GoPass/
 ├── main.go                 # Main application file
 ├── go.mod                  # Go module dependencies
-├── README.md              # This file
-└── ~/.gopass/
+├── README.md               # This file
+└── templates               # Directory for login, dashboard, and new password form
+    └── dashboard.html      # Dashboard with password entries
+    └── login.html          # Login page for master password
+    └── form.html           # Form for adding/editing passwords
+    
+~/.gopass/
     └── passwords.enc      # Encrypted database (created at runtime)
 ```
 
