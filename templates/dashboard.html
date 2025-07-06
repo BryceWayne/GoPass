@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{.Title}}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; }
+        .header { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header h1 { margin: 0; display: inline-block; }
+        .header .actions { float: right; }
+        .search-box { width: 300px; padding: 8px; margin-right: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .btn { background: #007bff; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn:hover { background: #0056b3; }
+        .btn-danger { background: #dc3545; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+        .btn-sm { padding: 4px 8px; font-size: 12px; }
+        .entries { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .entry { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; }
+        .entry:last-child { border-bottom: none; }
+        .entry-info { flex-grow: 1; }
+        .entry-title { font-weight: bold; font-size: 16px; }
+        .entry-details { color: #666; font-size: 14px; margin-top: 5px; }
+        .entry-actions { display: flex; gap: 5px; }
+        .password-field { font-family: monospace; background: #f8f9fa; padding: 2px 4px; border-radius: 3px; }
+        .password-hidden { color: #666; }
+        .password-visible { color: #333; }
+        .no-entries { text-align: center; padding: 40px; color: #666; }
+    </style>
+    <script>
+        function copyPassword(password) {
+            navigator.clipboard.writeText(password).then(function() {
+                alert('Password copied to clipboard!');
+            });
+        }
+        
+        function togglePassword(entryId) {
+            const passwordSpan = document.getElementById('password-' + entryId);
+            const showBtn = document.getElementById('show-btn-' + entryId);
+            const actualPassword = passwordSpan.getAttribute('data-password');
+            
+            if (passwordSpan.classList.contains('password-hidden')) {
+                passwordSpan.classList.remove('password-hidden');
+                passwordSpan.classList.add('password-visible');
+                passwordSpan.textContent = actualPassword;
+                showBtn.textContent = 'Hide';
+            } else {
+                passwordSpan.classList.remove('password-visible');
+                passwordSpan.classList.add('password-hidden');
+                passwordSpan.textContent = '••••••••';
+                showBtn.textContent = 'Show';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1>🔒 GoPass</h1>
+        <div class="actions">
+            <input type="text" class="search-box" placeholder="Search passwords..." value="{{.Search}}" 
+                   onkeyup="if(event.key==='Enter') window.location.href='/dashboard?search='+this.value">
+            <a href="/add" class="btn btn-success">Add Password</a>
+            <a href="/lock" class="btn btn-danger">Lock Vault</a>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="entries">
+        {{if .Entries}}
+            {{range .Entries}}
+            <div class="entry">
+                <div class="entry-info">
+                    <div class="entry-title">{{.Title}}</div>
+                    <div class="entry-details">
+                        <strong>Username:</strong> {{.Username}}<br>
+                        {{if .Website}}<strong>Website:</strong> {{.Website}}<br>{{end}}
+                        <strong>Password:</strong> <span id="password-{{.ID}}" class="password-field password-hidden" data-password="{{.Password}}">••••••••</span>
+                    </div>
+                </div>
+                <div class="entry-actions">
+                    <button id="show-btn-{{.ID}}" class="btn btn-sm" onclick="togglePassword('{{.ID}}')">Show</button>
+                    <button class="btn btn-sm" onclick="copyPassword('{{.Password}}')">Copy</button>
+                    <a href="/edit/{{.ID}}" class="btn btn-sm">Edit</a>
+                    <a href="/delete/{{.ID}}" class="btn btn-danger btn-sm" 
+                       onclick="return confirm('Are you sure you want to delete this entry?')">Delete</a>
+                </div>
+            </div>
+            {{end}}
+        {{else}}
+            <div class="no-entries">
+                <h3>No passwords found</h3>
+                <p>{{if .Search}}Try a different search term or{{end}} <a href="/add">add your first password</a></p>
+            </div>
+        {{end}}
+    </div>
+</body>
+</html>
